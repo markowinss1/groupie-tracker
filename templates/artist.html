@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Name}}</title>
+</head>
+
+<body>
+    <a href="/">← Назад к списку</a>
+
+    <h1>{{.Name}}</h1>
+
+    <img src="{{.Image}}" alt="{{.Name}}" width="300">
+
+    <p>Год начала деятельности: {{.CreationDate}}</p>
+    <p>Дата первого альбома: {{.FirstAlbum}}</p>
+
+    <h3>Участники группы:</h3>
+    <ul>
+        {{range .Members}}
+        <li>{{.}}</li>
+        {{end}}
+    </ul>
+
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Groupie Tracker</title>
+    <style>
+        body {
+            background-color: yellow;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Список артистов</h1>
+
+    <form method="GET" action="/">
+        <input type="text" name="search" placeholder="Поиск по имени артиста" />
+        <button type="submit">Найти</button>
+        <a href="/">✕</a>
+    </form>
+
+    {{if .}}
+    <div class="artist-list">
+        {{range .}}
+        <div class="artist-card">
+            <a href="/artist?id={{.Id}}">
+                <img src="{{.Image}}" alt="{{.Name}}" width="200">
+                <p>{{.Name}}</p>
+            </a>
+        </div>
+        {{end}}
+    </div>
+    {{else}}
+    <p>Ничего не найдено</p>
+    {{end}}
+
+</body>
+
+</html>
