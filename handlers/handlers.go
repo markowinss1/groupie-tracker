@@ -4,11 +4,17 @@ import (
 	"fmt"
 	"groupie-tracker/api"
 	"groupie-tracker/models"
+	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
-	"text/template"
 )
+
+type ArtistPageData struct {
+	Artist   models.Artists
+	Date     models.Dates
+	Location models.Locations
+}
 
 func SearchBar(artists []models.Artists, s string) []models.Artists {
 
@@ -75,13 +81,24 @@ func Artistpage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	artistDate, err := api.GetDates(nartist.ConcertDates)
+	if err != nil {
+		http.Error(w, "Error!", http.StatusInternalServerError)
+	}
+	artistLocation, err := api.GetLocations(nartist.Locations)
+	if err != nil {
+		http.Error(w, "Error!", http.StatusInternalServerError)
+	}
+
+	var artistPage = ArtistPageData{Artist: nartist, Date: artistDate, Location: artistLocation}
+
 	tmpl, err := template.ParseFiles("templates/artist.html")
 	if err != nil {
 		fmt.Println("Template parsing error:", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	err = tmpl.Execute(w, nartist)
+	err = tmpl.Execute(w, artistPage)
 	if err != nil {
 		http.Error(w, "Failed to render page", http.StatusInternalServerError)
 		return
