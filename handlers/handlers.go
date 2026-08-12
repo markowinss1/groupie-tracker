@@ -29,6 +29,11 @@ func SearchBar(artists []models.Artists, s string) []models.Artists {
 
 func Mainpage(w http.ResponseWriter, r *http.Request) {
 
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
 	artists, err := api.GetArtists("https://groupietrackers.herokuapp.com/api/artists")
 	if err != nil {
 		http.Error(w, "Failed to load artists list, please try again later", http.StatusInternalServerError)
