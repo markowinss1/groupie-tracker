@@ -3,22 +3,37 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{{.Name}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <title>{{.Artist.Name}}</title>
 </head>
 
 <body>
     <a href="/">← Назад к списку</a>
 
-    <h1>{{.Name}}</h1>
+    <h1>{{.Artist.Name}}</h1>
 
-    <img src="{{.Image}}" alt="{{.Name}}" width="300">
+    <img src="{{.Artist.Image}}" alt="{{.Artist.Name}}" width="300">
 
-    <p>Год начала деятельности: {{.CreationDate}}</p>
-    <p>Дата первого альбома: {{.FirstAlbum}}</p>
+    <p>Год начала деятельности: {{.Artist.CreationDate}}</p>
+    <p>Дата первого альбома: {{.Artist.FirstAlbum}}</p>
 
     <h3>Участники группы:</h3>
     <ul>
-        {{range .Members}}
+        {{range .Artist.Members}}
+        <li>{{.}}</li>
+        {{end}}
+    </ul>
+
+    <h3>Локации концертов:</h3>
+    <ul>
+        {{range .Location.Locations}}
+        <li>{{.}}</li>
+        {{end}}
+    </ul>
+
+    <h3>Даты концертов:</h3>
+    <ul>
+        {{range .Date.Dates}}
         <li>{{.}}</li>
         {{end}}
     </ul>

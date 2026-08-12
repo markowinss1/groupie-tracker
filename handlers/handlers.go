@@ -84,10 +84,12 @@ func Artistpage(w http.ResponseWriter, r *http.Request) {
 	artistDate, err := api.GetDates(nartist.ConcertDates)
 	if err != nil {
 		http.Error(w, "Error!", http.StatusInternalServerError)
+		return
 	}
 	artistLocation, err := api.GetLocations(nartist.Locations)
 	if err != nil {
 		http.Error(w, "Error!", http.StatusInternalServerError)
+		return
 	}
 
 	var artistPage = ArtistPageData{Artist: nartist, Date: artistDate, Location: artistLocation}
