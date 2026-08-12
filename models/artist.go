@@ -1,12 +1,5 @@
 package models
 
-type ApiLinks struct {
-	Artists   string `json:"artists"`
-	Locations string `json:"locations"`
-	Dates     string `json:"dates"`
-	Relations string `json:"relations"`
-}
-
 type Artists struct {
 	Id           int      `json:"id"`
 	Image        string   `json:"image"`
