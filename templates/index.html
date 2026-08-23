@@ -1,36 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
-    <title>Groupie Tracker</title>
+    <title>Groupie Tracker — Главная</title>
 </head>
 
 <body>
-    <h1>Список артистов</h1>
+    <div class="container">
+        <header class="page-header">
+            <h1>Список артистов</h1>
+            <p class="subtitle">Исследуйте музыкальные группы, их альбомы, концерты и участников</p>
+        </header>
 
-    <form method="GET" action="/">
-        <input type="text" name="search" placeholder="Поиск по имени артиста" />
-        <button type="submit">Найти</button>
-        <a href="/">✕</a>
-    </form>
+        <form method="GET" action="/" class="search-form" id="searchForm">
+            <div class="search-input-wrapper">
+                <input type="text" name="search" id="searchInput" value="{{.SearchQuery}}"
+                    placeholder="Поиск по имени артиста (нажмите '/' для фокуса)" autocomplete="off" />
+                <span class="shortcut-badge">/</span>
+            </div>
+            <button type="submit" class="btn btn-primary">Найти</button>
+            <a href="/" class="btn btn-secondary btn-reset" title="Сбросить поиск">✕ Сбросить</a>
+        </form>
 
-    {{if .}}
-    <div class="artist-list">
-        {{range .}}
-        <div class="artist-card">
-            <a href="/artist?id={{.Id}}">
-                <img src="{{.Image}}" alt="{{.Name}}" width="200">
-                <p>{{.Name}}</p>
-            </a>
+        {{if .Artists}}
+        <div class="search-feedback">
+            <span class="results-count">Найдено артистов: <strong>{{len .Artists}}</strong></span>
+        </div>
+
+        <div class="artist-list">
+            {{$search := .SearchQuery}}
+            {{range .Artists}}
+            <div class="artist-card">
+                <a href="/artist?id={{.Id}}&searchQuery={{$search}}">
+                    <div class="card-img-wrapper">
+                        <img src="{{.Image}}" alt="{{.Name}}" loading="lazy">
+                    </div>
+                    <div class="card-content">
+                        <p>{{.Name}}</p>
+                        <span class="card-action-hint">Подробнее &rarr;</span>
+                    </div>
+                </a>
+            </div>
+            {{end}}
+        </div>
+        {{else}}
+        <div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Ничего не найдено</h3>
+            <p>По вашему запросу не найдено ни одного артиста. Попробуйте изменить поисковый запрос.</p>
+            <a href="/" class="btn btn-primary">Показать всех артистов</a>
         </div>
         {{end}}
     </div>
-    {{else}}
-    <p>Ничего не найдено</p>
-    {{end}}
 
+    <script>
+        document.addEventListener('keydown', function (e) {
+            const searchInput = document.getElementById('searchInput');
+            if (e.key === '/' && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+                searchInput.select();
+            }
+            if (e.key === 'Escape' && document.activeElement === searchInput) {
+                searchInput.blur();
+            }
+        });
+    </script>
 </body>
 
 </html>

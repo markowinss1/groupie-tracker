@@ -1,43 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
-    <title>{{.Artist.Name}}</title>
+    <title>{{.Artist.Name}} — Groupie Tracker</title>
 </head>
 
 <body>
-    <a href="/">← Назад к списку</a>
+    <div class="container">
+        <nav class="breadcrumb-nav">
+            <a href="/?search={{.SearchQuery}}" class="back-link">← Назад к списку артистов</a>
+        </nav>
 
-    <h1>{{.Artist.Name}}</h1>
+        <div class="artist-profile">
+            <div class="artist-hero">
+                <div class="artist-avatar-container">
+                    <img src="{{.Artist.Image}}" alt="{{.Artist.Name}}">
+                </div>
+                <div class="artist-main-info">
+                    <h1>{{.Artist.Name}}</h1>
+                    <div class="artist-meta-badges">
+                        <div class="meta-badge">
+                            <span class="badge-label">Начало карьеры</span>
+                            <span class="badge-value">{{.Artist.CreationDate}}</span>
+                        </div>
+                        <div class="meta-badge">
+                            <span class="badge-label">Первый альбом</span>
+                            <span class="badge-value">{{.Artist.FirstAlbum}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <img src="{{.Artist.Image}}" alt="{{.Artist.Name}}" width="300">
+            <div class="artist-details-grid">
+                <div class="detail-card">
+                    <h3>Участники группы</h3>
+                    <ul class="styled-list">
+                        {{range .Artist.Members}}
+                        <li><span class="bullet-icon">👤</span> {{.}}</li>
+                        {{end}}
+                    </ul>
+                </div>
 
-    <p>Год начала деятельности: {{.Artist.CreationDate}}</p>
-    <p>Дата первого альбома: {{.Artist.FirstAlbum}}</p>
+                <div class="detail-card">
+                    <h3>Локации концертов</h3>
+                    <ul class="styled-list">
+                        {{range .Location.Locations}}
+                        <li><span class="bullet-icon">📍</span> {{.}}</li>
+                        {{end}}
+                    </ul>
+                </div>
 
-    <h3>Участники группы:</h3>
-    <ul>
-        {{range .Artist.Members}}
-        <li>{{.}}</li>
-        {{end}}
-    </ul>
-
-    <h3>Локации концертов:</h3>
-    <ul>
-        {{range .Location.Locations}}
-        <li>{{.}}</li>
-        {{end}}
-    </ul>
-
-    <h3>Даты концертов:</h3>
-    <ul>
-        {{range .Date.Dates}}
-        <li>{{.}}</li>
-        {{end}}
-    </ul>
-
+                <div class="detail-card">
+                    <h3>Даты концертов</h3>
+                    <ul class="styled-list">
+                        {{range .Date.Dates}}
+                        <li><span class="bullet-icon">📅</span> {{.}}</li>
+                        {{end}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

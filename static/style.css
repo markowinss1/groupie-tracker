@@ -1,101 +1,424 @@
+/* Базовые настройки и переменные */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #0f0f0f;
-    color: #e6e6e6;
-    padding: 40px;
+:root {
+    --bg-color: #0f0f12;
+    --card-bg: #18181c;
+    --card-hover: #222228;
+    --border-color: #2a2a33;
+    --text-primary: #f0f0f5;
+    --text-secondary: #9999a6;
+    --accent-color: #5c86ff;
+    --accent-hover: #7396ff;
+    --danger-color: #ff5c5c;
+    --radius: 12px;
 }
 
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    padding: 40px 20px;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Типографика */
 h1 {
-    margin-bottom: 24px;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+}
+
+.page-header {
+    margin-bottom: 28px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 6px;
 }
 
 h3 {
-    margin-top: 24px;
-    margin-bottom: 8px;
-    color: #b3b3b3;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
 }
 
 a {
-    color: #4da3ff;
+    color: var(--accent-color);
     text-decoration: none;
+    transition: color 0.2s ease;
 }
 
 a:hover {
-    text-decoration: underline;
+    color: var(--accent-hover);
 }
 
-form {
+/* Формы и кнопки (Правило 1, 3, 6) */
+.search-form {
     display: flex;
-    gap: 8px;
-    margin-bottom: 32px;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.search-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 280px;
 }
 
 input[type="text"] {
-    padding: 10px 14px;
-    border-radius: 6px;
-    border: 1px solid #333;
-    background-color: #1c1c1c;
-    color: #e6e6e6;
-    width: 260px;
+    width: 100%;
+    padding: 12px 16px;
+    padding-right: 40px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-button {
-    padding: 10px 18px;
-    border-radius: 6px;
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(92, 134, 255, 0.15);
+}
+
+.shortcut-badge {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--border-color);
+    color: var(--text-secondary);
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.btn {
+    padding: 12px 20px;
+    border-radius: var(--radius);
     border: none;
-    background-color: #4da3ff;
-    color: #0f0f0f;
-    cursor: pointer;
     font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
 }
 
-button:hover {
-    background-color: #6bb3ff;
+.btn:active {
+    transform: scale(0.98);
 }
 
+.btn-primary {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--card-hover);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+/* Обратная связь поиска (Правило 3) */
+.search-feedback {
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.search-feedback strong {
+    color: var(--text-primary);
+}
+
+/* Сетка карточек артистов (Правило 1) */
 .artist-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 20px;
 }
 
 .artist-card {
-    background-color: #1c1c1c;
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-    transition: transform 0.15s ease, background-color 0.15s ease;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .artist-card:hover {
-    background-color: #262626;
+    background-color: var(--card-hover);
+    border-color: rgba(92, 134, 255, 0.3);
     transform: translateY(-4px);
+}
+
+.artist-card a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.card-img-wrapper {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: #141418;
 }
 
 .artist-card img {
     width: 100%;
-    height: 220px;
-    /* было 160px */
+    height: 100%;
     object-fit: cover;
-    border-radius: 8px;
+    transition: transform 0.3s ease;
 }
 
-.artist-card p {
-    margin-top: 10px;
+.artist-card:hover img {
+    transform: scale(1.04);
+}
+
+.card-content {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-content p {
     font-weight: 600;
+    font-size: 1.05rem;
 }
 
-ul {
+.card-action-hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+}
+
+.artist-card:hover .card-action-hint {
+    color: var(--accent-color);
+}
+
+/* Пустое состояние (Правило 3, 5) */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin-top: 20px;
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+}
+
+.empty-state h3 {
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+/* Страница артиста (artist.html) */
+.breadcrumb-nav {
+    margin-bottom: 24px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.back-link:hover {
+    color: var(--accent-color);
+}
+
+.artist-profile {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.artist-hero {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    border-radius: var(--radius);
+    flex-wrap: wrap;
+}
+
+.artist-avatar-container {
+    width: 220px;
+    height: 220px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--border-color);
+}
+
+.artist-avatar-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.artist-main-info h1 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+}
+
+.artist-meta-badges {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.meta-badge {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-value {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-top: 2px;
+}
+
+.artist-details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.detail-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 24px;
+}
+
+.styled-list {
     list-style: none;
+    margin-top: 8px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px;
 }
 
-ul li {
-    padding: 4px 0;
-    border-bottom: 1px solid #2a2a2a;
+.styled-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.styled-list::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 3px;
+}
+
+.styled-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.styled-list li:last-child {
+    border-bottom: none;
+}
+
+.bullet-icon {
+    font-size: 0.85rem;
+}
+
+/* Страницы ошибок (400, 404, 500) */
+.error-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.error-container {
+    max-width: 480px;
+    padding: 40px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+}
+
+.error-code {
+    font-size: 5rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -2px;
+}
+
+.error-container h1 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+}
+
+.error-container p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-size: 0.95rem;
 }

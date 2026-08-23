@@ -10,10 +10,16 @@ import (
 	"strings"
 )
 
+type MainpageInfo struct {
+	Artists     []models.Artists
+	SearchQuery string
+}
+
 type ArtistPageData struct {
-	Artist   models.Artists
-	Date     models.Dates
-	Location models.Locations
+	Artist      models.Artists
+	Date        models.Dates
+	Location    models.Locations
+	SearchQuery string
 }
 
 func SearchBar(artists []models.Artists, s string) []models.Artists {
@@ -30,20 +36,20 @@ func SearchBar(artists []models.Artists, s string) []models.Artists {
 func Mainpage(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path != "/" {
-		http.NotFound(w, r)
+		renderError(w, http.StatusNotFound, "templates/404.html")
 		return
 	}
 
 	artists, err := api.GetArtists("https://groupietrackers.herokuapp.com/api/artists")
 	if err != nil {
-		http.Error(w, "Failed to load artists list, please try again later", http.StatusInternalServerError)
+		renderError(w, http.StatusInternalServerError, "templates/500.html")
 		return
 	}
 
 	tmpl, err := template.ParseFiles("templates/index.html")
 	if err != nil {
 		fmt.Println("Template parsing error:", err)
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		renderError(w, http.StatusInternalServerError, "templates/500.html")
 		return
 	}
 
@@ -52,9 +58,10 @@ func Mainpage(w http.ResponseWriter, r *http.Request) {
 		artists = SearchBar(artists, search)
 	}
 
-	err = tmpl.Execute(w, artists)
+	var MainpageData = MainpageInfo{Artists: artists, SearchQuery: search}
+	err = tmpl.Execute(w, MainpageData)
 	if err != nil {
-		http.Error(w, "Failed to render page", http.StatusInternalServerError)
+		renderError(w, http.StatusInternalServerError, "templates/500.html")
 		return
 	}
 
@@ -63,13 +70,15 @@ func Mainpage(w http.ResponseWriter, r *http.Request) {
 func Artistpage(w http.ResponseWriter, r *http.Request) {
 	artists, err := api.GetArtists("https://groupietrackers.herokuapp.com/api/artists")
 	if err != nil {
-		http.Error(w, "Failed to load artist data", http.StatusInternalServerError)
+		renderError(w, http.StatusInternalServerError, "templates/500.html")
 		return
 	}
 
+	searchQuery := r.URL.Query().Get("searchQuery")
+
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
-		http.Error(w, "Invalid artist ID", http.StatusBadRequest)
+		renderError(w, http.StatusBadRequest, "templates/400.html")
 		return
 	}
 
@@ -82,33 +91,49 @@ func Artistpage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if flag {
-		http.NotFound(w, r)
+		renderError(w, http.StatusNotFound, "templates/404.html")
 		return
 	}
 
 	artistDate, err := api.GetDates(nartist.ConcertDates)
 	if err != nil {
-		http.Error(w, "Error!", http.StatusInternalServerError)
+		renderError(w, http.StatusInternalServerError, "templates/500.html")
 		return
 	}
 	artistLocation, err := api.GetLocations(nartist.Locations)
 	if err != nil {
-		http.Error(w, "Error!", http.StatusInternalServerError)
+		renderError(w, http.StatusInternalServerError, "templates/500.html")
 		return
 	}
 
-	var artistPage = ArtistPageData{Artist: nartist, Date: artistDate, Location: artistLocation}
+	var artistPage = ArtistPageData{Artist: nartist, Date: artistDate, Location: artistLocation, SearchQuery: searchQuery}
 
 	tmpl, err := template.ParseFiles("templates/artist.html")
+	if err != nil {
+		fmt.Println("Template parsing error:", err)
+		renderError(w, http.StatusInternalServerError, "templates/500.html")
+		return
+	}
+	err = tmpl.Execute(w, artistPage)
+	if err != nil {
+		renderError(w, http.StatusInternalServerError, "templates/500.html")
+		return
+	}
+
+}
+
+func renderError(w http.ResponseWriter, statusCode int, templatePath string) {
+	tmpl, err := template.ParseFiles(templatePath)
 	if err != nil {
 		fmt.Println("Template parsing error:", err)
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	err = tmpl.Execute(w, artistPage)
+
+	w.WriteHeader(statusCode)
+	err = tmpl.Execute(w, nil)
 	if err != nil {
 		http.Error(w, "Failed to render page", http.StatusInternalServerError)
 		return
 	}
-
 }
