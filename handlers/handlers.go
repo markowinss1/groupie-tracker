@@ -33,6 +33,55 @@ func SearchBar(artists []models.Artists, s string) []models.Artists {
 	return foundArtists
 }
 
+type SearchResult struct {
+	Text string
+	Type string
+}
+
+func LiveSearch(artists []models.Artists, s string) []SearchResult {
+	var foundData []SearchResult
+
+	artistLocations, err := api.GetLocations("https://groupietrackers.herokuapp.com/api/locations")
+	if err != nil {
+		return nil
+	}
+
+	for _, artist := range artists {
+
+		// member, artist/band
+		if strings.Contains(strings.ToLower(artist.Name), strings.ToLower(s)) {
+			result := SearchResult{
+				Text: artist.Name,
+				Type: "artist/band",
+			}
+			foundData = append(foundData, result)
+
+			for _, member := range artist.Members {
+				if strings.Contains(strings.ToLower(member), strings.ToLower(s)) {
+					result = SearchResult{
+						Text: artist.Name,
+						Type: "member",
+					}
+					foundData = append(foundData, result)
+				}
+
+			}
+		}
+
+		for _, location := range artistLocations {
+			if strings.Contains(strings.ToLower(location), strings.ToLower(s)) {
+				result := SearchResult{
+					Text: artist.Name,
+					Type: "location",
+				}
+				foundData = append(foundData, result)
+			}
+		}
+	}
+
+	return foundData
+}
+
 func Mainpage(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path != "/" {
